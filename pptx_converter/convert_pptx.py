@@ -15,9 +15,9 @@ def convert_pptx(path):
         return
     new_path = path.replace('/Users/thebarn/challenge-dga/data', '/Users/thebarn/challenge-dga/formated_data') + '.txt'
     mkdir_on_path(new_path)
-    if not isfile(new_path):
-        subprocess.run(['touch', new_path])
-    subprocess.run(['/Users/thebarn/challenge-dga/scripts/pptx_converter/pptx2txt.sh', path, '>', new_path])
+    print('converting: ' + new_path)
+    with open(new_path, 'w') as output_file:
+        subprocess.call(['/Users/thebarn/challenge-dga/scripts/pptx_converter/pptx2txt.sh', '-v', path], stdout=output_file)
 
 
 def get_files_from_dir(path_to_dir):
