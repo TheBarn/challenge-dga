@@ -10,12 +10,15 @@ def mkdir_on_path(path):
         if not isdir(path_to_dir):
             subprocess.run(['mkdir', path_to_dir])
 
-
 def convert_pptx(path):
     if path.split('.')[-1] != 'pptx':
         return
-    new_path = path.replace('/Users/thebarn/challenge-dga/data', '/Users/thebarn/challenge-dga/formated_data')
+    new_path = path.replace('/Users/thebarn/challenge-dga/data', '/Users/thebarn/challenge-dga/formated_data') + '.txt'
     mkdir_on_path(new_path)
+    if not isfile(new_path):
+        subprocess.run(['touch', new_path])
+    subprocess.run(['/Users/thebarn/challenge-dga/scripts/pptx_converter/pptx2txt.sh', path, '>', new_path])
+
 
 def get_files_from_dir(path_to_dir):
     if not isdir(path_to_dir):
