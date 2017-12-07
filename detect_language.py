@@ -12,8 +12,8 @@ def get_files_from_dir(path_to_dir):
         elif isfile(path_to_output):
             file_name = path_to_output.split('/')[-1]
             with open(path_to_output, 'r', encoding='utf-8', errors='surrogateescape') as f:
-			    content = f.read()
-			    lang = ld.detect(content)
+                content = f.read()
+                lang = ld.detect(content)
             print(file_name + ' : ' + lang)
 
 def main():
