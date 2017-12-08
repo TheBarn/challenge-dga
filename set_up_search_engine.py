@@ -82,9 +82,7 @@ def search_in_index(search_kw, index):
         correction pour chaque mot entré par l'utilisateur. A voir comment on 
         mélange les suggestions des différents mots pour fournir des suggestions 
         complètes
-        
-    GROSSE REMARQUE: quand on crée un searcher, il faut ensuite le refermer. 
-    Mais quand on le referme, on n'a plus accès aux résultats
+
     '''
     parser = MultifieldParser(["content", "title"], index.schema) #on utilise un MultifieldParser pour rechercher à la fois dans le titre et dans le contenu
     parser.add_plugin(FuzzyTermPlugin()) #on rajoute un plugin de FuzzyMatching pour pouvoir chercher au delà des mots exacts
