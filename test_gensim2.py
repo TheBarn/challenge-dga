@@ -65,6 +65,6 @@ corpora.Mmcorpus.serialize('/tmp/simul.mm', corpus)
 from gensim import models
 tfidf = models.TfidfModel(corpus)
 corpus_tfidf = tfidf[corpus]
-lsi = models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=)
+lsi = models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=300)
 corpus_lsi = lsi[corpus_tfidf]
 lsi.save('/tmp/model.lsi')
