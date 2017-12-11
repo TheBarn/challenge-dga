@@ -8,11 +8,15 @@ from os import listdir
 from os.path import isfile, join
 import fnmatch
 from nltk.corpus import stopwords
+from gensim import corpora, models
+from collections import defaultdict
 
 files = []
-for root, dirnames, filenames in os.walk('.'):
-    for filename in fnmatch.filter(filenames, 'validation.txt'):
+docNames = []
+for root, dirnames, filenames in os.walk('./test_files'):
+    for filename in fnmatch.filter(filenames, '*.txt'):
         files.append(os.path.join(root, filename))
+        docNames.append(os.path.join(root, filename))
 
 contractions = re.compile(r"'|-|\"")
 # all non alphanumeric
@@ -38,14 +42,12 @@ for e in files:
         for line in f:
             str += clean(line)
         raw_corpus.append(str)
-        print(e)
 
 stoplist = set(stopwords.words('english')).union(set(stopwords.words('french')))
 texts = [[word for word in document.split() if word not in stoplist]
     for document in raw_corpus]
 
 # Count word frequencies
-from collections import defaultdict
 frequency = defaultdict(int)
 for text in texts:
     for token in text:
@@ -54,17 +56,14 @@ for text in texts:
 # Only keep words that appear more than once
 processed_corpus = [[token for token in text if frequency[token] > 1] for text in texts]
 
-from gensim import corpora
 dictionary = corpora.Dictionary(processed_corpus)
-dictionary.save('tmp/simul.dict')
-print(dictionary)
+dictionary.save('simul.dict')
 
 corpus = [dictionary.doc2bow(text) for text in texts]
-corpora.Mmcorpus.serialize('/tmp/simul.mm', corpus)
+corpora.MmCorpus.serialize('simul.mm', corpus)
 
-from gensim import models
 tfidf = models.TfidfModel(corpus)
 corpus_tfidf = tfidf[corpus]
 lsi = models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=300)
 corpus_lsi = lsi[corpus_tfidf]
-lsi.save('/tmp/model.lsi')
+lsi.save('model.lsi')
