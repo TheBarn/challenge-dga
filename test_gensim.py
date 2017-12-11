@@ -1,48 +1,54 @@
 #authors pdespres, fbabin
 
-import numpy
-import os
-import subprocess
 import re
 from os import listdir
-from os.path import isfile, join
-import fnmatch
+from os.path import isfile, join, isdir
 from nltk.corpus import stopwords
 
-files = []
-for root, dirnames, filenames in os.walk('.'):
-    for filename in fnmatch.filter(filenames, '*.txt'):
-        files.append(os.path.join(root, filename))
+def get_files_from_dir(path_to_dir, files):
+    if not isdir(path_to_dir):
+        return
+    for output in listdir(path_to_dir):
+        path_to_output = join(path_to_dir, output)
+        if isdir(path_to_output):
+            get_files_from_dir(path_to_output, files)
+        elif isfile(path_to_output):
+            files.append(path_to_output)
+    return(files)
 
-raw_corpus = []
-for e in files:
-    with open(e) as f:
-        str = ""
-        for line in f:
-            line = re.sub(' +', ' ', line)
-            line = line.replace("(", "")
-            line = line.replace(")", "")
-            str += line
-        raw_corpus.append(str)
-        print(e)
+def get_corpus(file_path):
+    with open(file_path, 'r', encoding='utf-8', errors='surrogateescape') as f:
+        corpus = f.read()
+        corpus = re.sub(' +', ' ', corpus)
+        corpus = corpus.replace("(", "")
+        corpus = corpus.replace(")", "")
+    return corpus
 
-stoplist = set(stopwords.words('english')).union(set(stopwords.words('french')))
-#set('for a of the and to in le la mais ou donc or ni car + on in oui non'.split(' '))
-#stoplist = set('for a of the and to in le la mais ou donc or ni car'.split(' '))
-# Lowercase each document, split it by white space and filter out stopwords
-texts = [[word for word in document.lower().split() if word not in stoplist]
-    for document in raw_corpus]
+def get_words_set(dir_path):
+    files = []
+    files = get_files_from_dir(dir_path, files)
+    stoplist = set(stopwords.words('english')).union(set(stopwords.words('french')))
+    words_set = []
+    for f_path in files:
+        corpus = get_corpus(f_path)
+        words_set += [word for word in corpus.lower().split() if word not in stoplist]
+    return words_set
 
-# Count word frequencies
-from collections import defaultdict
-frequency = defaultdict(int)
-for text in texts:
-    for token in text:
-        frequency[token] += 1
+def get_frequency(words_set):
+    frequency = {}
+    for word in words_set:
+        if word not in frequency:
+            frequency[word] = 1
+        else:
+            frequency[word] += 1
+    return frequency
 
-# Only keep words that appear more than once
-processed_corpus = [[token for token in text if frequency[token] > 1] for text in texts]
-from gensim import corpora
+def main():
+    words_set = get_words_set('/Users/thebarn/challenge-dga/formated_data')
+    frequency = get_frequency(words_set)
+    processed_corpus = [token for token in words_set if frequency[token] > 1]
+    return processed_corpus
 
-dictionnary = corpora.Dictionnary(processed_corpus)
-print(dictionnary)
+if __name__ == "__main__":
+    processed_corpus = main()
+    print(processed_corpus)
