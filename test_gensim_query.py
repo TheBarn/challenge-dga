@@ -1,13 +1,22 @@
 from gensim import corpora, models, similarities
-dictionary = corpora.Dictionary.load('/tmp/simul.dict')
-corpus = corpora.MmCorpus('/tmp/simul.mm')
-lsi = models.load('/tmp/model.lsi')
 
-search = ? # saisie de recherche
-vec_bow = dictionary.doc2bow(doc.lower().split())
-vec_lsi = lsi[vec_bow]
+def search(search_kw):
+    dictionary = corpora.Dictionary.load('simul.dict')
+    corpus = corpora.MmCorpus('simul.mm')
+    lsi = models.LsiModel.load('model.lsi')
 
-index = similarities.MatrixSimilarity(lsi[corpus])
-sims = index[vec_lsi]
-sims = sorted(enumerate(sims), key=lambda item: -item[1])
-print(sims)
+    vec_bow = dictionary.doc2bow(search_kw.lower().split())
+    vec_lsi = lsi[vec_bow]
+
+    index = similarities.MatrixSimilarity(lsi[corpus])
+    sims = index[vec_lsi]
+    result = sorted(enumerate(sims), key=lambda item: -item[1])
+    return(result)
+
+def main():
+    return_lst = search('deepthought')
+    return(return_lst)
+
+if __name__ == "__main__":
+    return_lst = main()
+    print(return_lst)
