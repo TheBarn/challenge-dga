@@ -55,9 +55,9 @@ for text in texts:
 processed_corpus = [[token for token in text if frequency[token] > 1] for text in texts]
 
 from gensim import corpora
-dictionnary = corpora.Dictionnary(processed_corpus)
+dictionary = corpora.Dictionary(processed_corpus)
 dictionary.save('tmp/simul.dict')
-print(dictionnary)
+print(dictionary)
 
 corpus = [dictionary.doc2bow(text) for text in texts]
 corpora.Mmcorpus.serialize('/tmp/simul.mm', corpus)
