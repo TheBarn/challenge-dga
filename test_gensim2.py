@@ -12,12 +12,15 @@ from gensim import corpora, models
 from collections import defaultdict
 
 files = []
-docNames = []
+docNames = {}
+i = 0
 for root, dirnames, filenames in os.walk('./test_files'):
     for filename in fnmatch.filter(filenames, '*.txt'):
         files.append(os.path.join(root, filename))
-        docNames.append(os.path.join(root, filename))
+#        docNames.append(os.path.join(root, filename))
+        docnames[++i] = os.path.join(root, filename)
 
+numpy.save('index_dict.npy', docNames)
 contractions = re.compile(r"'|-|\"")
 # all non alphanumeric
 symbols = re.compile(r'(\W+)', re.U)
