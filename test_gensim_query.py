@@ -13,13 +13,13 @@ def search(search_kw):
     index = similarities.MatrixSimilarity(lsi[corpus])
     sims = index[vec_lsi]
     result = sorted(enumerate(sims), key=lambda item: -item[1])
-    result_files[]
-    for r in result
-        result_files.append(docnames[r])
+    result_files = []
+    for r in result[0]:
+        result_files.append(docNames[r])
     return(result_files)
 
 def main():
-    return_lst = search('deepthought')
+    return_lst = search('farcy')
     return(return_lst)
 
 if __name__ == "__main__":
