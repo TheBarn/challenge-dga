@@ -18,7 +18,8 @@ for root, dirnames, filenames in os.walk('./test_files'):
     for filename in fnmatch.filter(filenames, '*.txt'):
         files.append(os.path.join(root, filename))
 #        docNames.append(os.path.join(root, filename))
-        docNames[++i] = os.path.join(root, filename)
+        docNames[i] = os.path.join(root, filename)
+        i += 1
 
 numpy.save('index_dict.npy', docNames)
 contractions = re.compile(r"'|-|\"")
